@@ -12,8 +12,8 @@ namespace BitirmeParsing
     {
         public Program()
         {
-
-
+            // test bilal
+            
             MySQLConnectionTest.testConnection();
             new MovieParser.MovieParser().Parse();
             Console.WriteLine("movie counter db: "+DBHelper.Instance.addMovieCounter);
