@@ -13,14 +13,18 @@ namespace BitirmeParsing.MovieParser
     {
         List<Movie> bufferList;
 
+        BlockingCollection<List<Movie>> dataItems;
+
         public void Parse()
         {
 
-            BlockingCollection<Movie> dataItems = new BlockingCollection<Movie>();
+            dataItems = new BlockingCollection<List<Movie>>();
 
             DBHelper.Instance.openConnection();
 
             bufferList = new List<Movie>();
+
+            long addCounter = 0;
 
             Task.Run(() =>
             {
@@ -32,7 +36,9 @@ namespace BitirmeParsing.MovieParser
                     string line;
                     string[] fields;
                     string currentMovieName = null;
-                    long counter = 0;
+
+                    List<Movie> blockMovies = new List<Movie>();
+
                     while ((line = sr.ReadLine()) != null)
                     {
                         if (line.Length == 0) continue;
@@ -46,6 +52,8 @@ namespace BitirmeParsing.MovieParser
                             string yearString = fields[0].Substring(fields[0].IndexOf('(') + 1, 4);
 
                             string nameString = fields[0].Substring(0, fields[0].IndexOf('('));
+
+                            nameString = nameString.Replace("\"", "");
 
                             int year = 0;
 
@@ -62,13 +70,21 @@ namespace BitirmeParsing.MovieParser
 
                             }
 
+                            addCounter++;
+
+                            if (addCounter % GlobalVariables.writeToDbBulkSize == 0)
+                            {
+                                dataItems.Add(blockMovies);
+                                blockMovies = new List<Movie>();
+                            }
+
                             //addMovieToDb(new Movie() { Name = nameString, Year = year });
-                            dataItems.Add(new Movie() { Name = nameString, Year = year });
+                            blockMovies.Add(new Movie() { Name = nameString, Year = year });
                             //yearString.Remove('"')
                         }
 
-                        counter++;
-                        if (counter % 10000 == 0) Console.WriteLine(counter + " " + line);
+                        
+                        if (addCounter % 10000 == 0) Console.WriteLine(addCounter + " " + line);
                         //Console.WriteLine(counter + " " + line);
 
                     }
@@ -78,16 +94,23 @@ namespace BitirmeParsing.MovieParser
                 
             });
 
+
+            //int consumerCounter = 0;
+
             while (!dataItems.IsCompleted )
             {
 
-                Movie data = null;
+                List<Movie> data = null;
                 // Blocks if number.Count == 0
                 // IOE means that Take() was called on a completed collection.
                 // Some other thread can call CompleteAdding after we pass the
                 // IsCompleted check but before we call Take. 
                 // In this example, we can simply catch the exception since the 
                 // loop will break on the next iteration.
+
+
+                
+
                 try
                 {
                     data = dataItems.Take();
@@ -105,13 +128,10 @@ namespace BitirmeParsing.MovieParser
 
         }
 
-        void addMovieToDb(Movie movie)
+        void addMovieToDb(List<Movie> movies)
         {
-            if (bufferList.Count == GlobalVariables.writeToDbBulkSize)
-            {
+            DBHelper.Instance.addMovie(movies);
 
-            }
-            DBHelper.Instance.addMovie(movie);
         }
     }
 }

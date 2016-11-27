@@ -8,6 +8,6 @@ namespace BitirmeParsing
 {
     class GlobalVariables
     {
-        public static int writeToDbBulkSize = 1000; 
+        public static int writeToDbBulkSize = 2000; 
     }
 }
