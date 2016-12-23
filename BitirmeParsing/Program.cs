@@ -12,22 +12,20 @@ namespace BitirmeParsing
     {
         public Program()
         {
-            // test bilal
-            
             MySQLConnectionTest.testConnection();
-            new MovieParser.MovieParser().Parse();
-            Console.WriteLine("movie counter db: "+DBHelper.Instance.addMovieCounter);
+            //new ColorParser.ColorParser().Parse();
+            //Console.WriteLine("color counter db " + DBHelper.Instance.addColorCounter);
+            new GenreParser.GenreParser().Parse();
+            Console.WriteLine("genre counter db " + DBHelper.Instance.addGenreCounter);
+
+            //new MovieParser.MovieParser().Parse();
+            //Console.WriteLine("movie counter db: " + DBHelper.Instance.addMovieCounter);
             Console.ReadLine();
 
         }
-
-        
-
         static void Main(string[] args)
         {
             new Program();
         }
-
-
     }
 }

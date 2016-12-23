@@ -1,4 +1,6 @@
-﻿using MySql.Data.MySqlClient;
+﻿using BitirmeParsing.ColorParser;
+using BitirmeParsing.GenreParser;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -6,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// director id'nin aynı anda oluşmasına dikkat
+//
 namespace BitirmeParsing.DBConnection
 {
     class DBHelper
@@ -25,10 +30,11 @@ namespace BitirmeParsing.DBConnection
 
         private MySqlConnection connection;
 
-        string myConnectionString = "server=127.0.0.1;uid=root;" +
-            "pwd=asede;database=bitirme;";
+        string myConnectionString = "server=localhost; uid=root;" + "pwd=1234; database=bitirme;";
 
         public long addMovieCounter = 0;
+        public long addGenreCounter = 0;
+        public int addColorCounter = 0;
 
         public bool openConnection()
         {
@@ -73,7 +79,6 @@ namespace BitirmeParsing.DBConnection
                 //years.Add(movie.Year);
                 //command.Parameters.AddRange
             }
-            //string query = "SET autocommit = 0; ";
 
 
             if (connection!=null)
@@ -126,7 +131,7 @@ namespace BitirmeParsing.DBConnection
                 ////query +=" COMMIT;";
                 //command.CommandText = query;
 
-                string cmd = "SET autocommit = 0; INSERT INTO movie_deneme VALUES ";
+                string cmd = "SET autocommit = 0; INSERT INTO movie VALUES ";
                 //string cmd = " INSERT INTO movie_deneme VALUES ";
                 int counter = 0;
 
@@ -134,9 +139,17 @@ namespace BitirmeParsing.DBConnection
 
                 foreach (Movie movie in movies)
                 {
-                    sql += "(NULL,@name" + counter + ", @year" + counter + "),";
+                    sql += "(NULL,@name" + counter + ", @year" + counter + ",null,null,null,null,null,null,null),";
                     command.Parameters.Add(new MySqlParameter("name" + counter, movie.Name));
                     command.Parameters.Add(new MySqlParameter("year" + counter, movie.Year.ToString()));
+                    command.Parameters.Add(new MySqlParameter("genreId" + counter, null));
+                    command.Parameters.Add(new MySqlParameter("directorId" + counter, null));
+                    command.Parameters.Add(new MySqlParameter("color" + counter, null));
+                    command.Parameters.Add(new MySqlParameter("moviecol" + counter, null));
+                    command.Parameters.Add(new MySqlParameter("country" + counter, null));
+                    command.Parameters.Add(new MySqlParameter("rating" + counter, null));
+                    command.Parameters.Add(new MySqlParameter("certificateId" + counter, null));
+                    command.Parameters.Add(new MySqlParameter("runningTime" + counter, null));
                     counter++;
                 }
 
@@ -157,26 +170,82 @@ namespace BitirmeParsing.DBConnection
             }
         }
 
-        //private SqlParameter[] AddArrayParameters<T>(this SqlCommand cmd, IEnumerable<T> values, string paramNameRoot, int start = 1, string separator = ", ")
-        //{
-        //    /* An array cannot be simply added as a parameter to a SqlCommand so we need to loop through things and add it manually. 
-        //     * Each item in the array will end up being it's own SqlParameter so the return value for this must be used as part of the
-        //     * IN statement in the CommandText.
-        //     */
-        //    var parameters = new List<SqlParameter>();
-        //    var parameterNames = new List<string>();
-        //    var paramNbr = start;
-        //    foreach (var value in values)
-        //    {
-        //        var paramName = string.Format("@{0}{1}", paramNameRoot, paramNbr++);
-        //        parameterNames.Add(paramName);
-        //        parameters.Add(cmd.Parameters.AddWithValue(paramName, value));
-        //    }
+        public void addGenres(List<Genre> genres)
+        {
+            List<string> nameGenre = new List<string>();
+            foreach (Genre genre in genres)
+            {
+                nameGenre.Add(genre.movieId + "," + genre.genreName);
+            }
 
-        //    cmd.CommandText = cmd.CommandText.Replace("{" + paramNameRoot + "}", string.Join(separator, parameterNames));
+            if (connection != null)
+            {
 
-        //    return parameters.ToArray();
-        //}
+                MySqlCommand command = connection.CreateCommand();
 
+                string cmd = "SET autocommit = 0; INSERT INTO moviegenre VALUES ";
+                int counter = 0;
+
+                string sql = string.Empty;
+                foreach (Genre genre in genres)
+                {
+
+                    sql += "(NULL,@genreId" + counter + ", @genrename" + counter + "),";
+                    command.Parameters.Add(new MySqlParameter("movieId" + counter, genre.movieId));
+                    command.Parameters.Add(new MySqlParameter("genrename" + counter, genre.genreName));
+                    counter++;
+                }
+                command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
+                //command.CommandText = cmd+sql.Substring(0, sql.Length - 1); //Remove ',' at the end
+                try
+                {
+                    command.ExecuteNonQuery();
+                    addGenreCounter++;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("addGenre error " + e.Message);
+                    Console.WriteLine("addGenre error Genre:" + genres[genres.Count - 1].ToString());
+                }
+            }
+        }
+        public void addColors(List<Color> colors)
+        {
+            List<string> nameColor = new List<string>();
+            foreach (Color color in colors)
+            {
+                nameColor.Add(color.Name + "," + color.colorName);
+            }
+
+            if (connection != null)
+            {
+
+                MySqlCommand command = connection.CreateCommand();
+
+                string cmd = "SET autocommit = 0; INSERT INTO colors VALUES ";
+                int counter = 0;
+
+                string sql = string.Empty;
+
+                foreach (Color color in colors)
+                {
+                    sql += "(NULL,@moviename" + counter + ", @colorinfo" + counter + "),";
+                    command.Parameters.Add(new MySqlParameter("moviename" + counter, color.Name));
+                    command.Parameters.Add(new MySqlParameter("colorinfo" + counter, color.colorName));
+                    counter++;
+                }
+                command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
+                try
+                {
+                    command.ExecuteNonQuery();
+                    addColorCounter++;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("addColor error " + e.Message);
+                    Console.WriteLine("addColor error Color:" + colors[colors.Count - 1].ToString());
+                }
+            }
+        }
     }
 }

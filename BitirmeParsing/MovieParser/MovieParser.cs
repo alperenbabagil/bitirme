@@ -29,9 +29,9 @@ namespace BitirmeParsing.MovieParser
             Task.Run(() =>
             {
                 //using (FileStream fs = File.Open(@"C:\Users\alperen\Desktop\bitirme\parsing\movies.list", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (FileStream fs = File.Open(@"C:\Users\alperen\Desktop\bitirme\temiz list\movies.list", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (FileStream fs = File.Open(@"C:\Users\bgulsen\Documents\Visual Studio 2015\Projects\bitirme\BitirmeParsing\movies.list", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (BufferedStream bs = new BufferedStream(fs))
-                using (StreamReader sr = new StreamReader(bs, System.Text.Encoding.Default))
+                using (StreamReader sr = new StreamReader(bs, System.Text.Encoding.Default))        //!!!!!!!!!
                 {
                     string line;
                     string[] fields;
@@ -54,7 +54,7 @@ namespace BitirmeParsing.MovieParser
                             string nameString = fields[0].Substring(0, fields[0].IndexOf('('));
 
                             nameString = nameString.Replace("\"", "");
-
+                            nameString = nameString.Replace("'", "");
                             int year = 0;
 
                             if (yearString != null && yearString.Length > 0)
@@ -131,7 +131,6 @@ namespace BitirmeParsing.MovieParser
         void addMovieToDb(List<Movie> movies)
         {
             DBHelper.Instance.addMovie(movies);
-
         }
     }
 }
