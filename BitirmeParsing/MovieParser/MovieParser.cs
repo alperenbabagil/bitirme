@@ -1,4 +1,4 @@
-﻿using BitirmeParsing.DBConnection;
+﻿ using BitirmeParsing.DBConnection;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

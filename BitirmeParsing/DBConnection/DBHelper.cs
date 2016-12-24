@@ -157,6 +157,21 @@ namespace BitirmeParsing.DBConnection
             }
         }
 
+        public int searchMovie(string name)
+            {
+            openConnection();
+            MySqlCommand command = connection.CreateCommand();
+
+            for (int i = 0; i < 100000; i++)
+                {                   
+                    string cmd = "SELECT name FROM movie_deneme WHERE name = 'Nenasytnye';  ";
+                    command.CommandText = cmd;
+                    command.ExecuteNonQuery();
+                }
+                
+                return 0;
+            } 
+
         //private SqlParameter[] AddArrayParameters<T>(this SqlCommand cmd, IEnumerable<T> values, string paramNameRoot, int start = 1, string separator = ", ")
         //{
         //    /* An array cannot be simply added as a parameter to a SqlCommand so we need to loop through things and add it manually. 
