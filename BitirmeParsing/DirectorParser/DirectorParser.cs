@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BitirmeParsing.DirectorParser
 {
-    class DirectorParser
+    public class DirectorParser
     {
         // 2 iş yapar. Directorları okuyup director tablosuna yazma ve directorların filmlerine göre movie okuyup yeni movie oluşturarak 
         //db ye yazma.

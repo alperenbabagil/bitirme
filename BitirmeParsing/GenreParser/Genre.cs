@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BitirmeParsing.GenreParser
 {
-    class Genre
+    public class Genre
     {
         List<Genre> genres;
 

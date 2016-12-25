@@ -32,7 +32,7 @@ namespace BitirmeParsing
             //new DirectorParser.DirectorParser().Parse();
             ////Console.WriteLine("movie counter db: "+DBHelper.Instance.addMovieCounter);
 
-            //var vc = DBConnection.DBHelper.Instance.getMovieByProperty("name", "Way Out",true);
+            var vc = DBConnection.DBHelper.Instance.getMovieByProperty("name", "Way Out",true);
 
             bool isConnectionAvaliable=MySQLConnectionTest.testConnection();
             //new ColorParser.ColorParser().Parse();

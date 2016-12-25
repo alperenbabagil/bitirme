@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BitirmeParsing
 {
-    class Director
+    public class Director
     {
         public List<Movie> movies;
 

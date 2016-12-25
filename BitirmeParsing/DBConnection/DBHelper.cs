@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 //
 namespace BitirmeParsing.DBConnection
 {
-    class DBHelper
+    public class DBHelper
     {
         private static DBHelper _instance;
 

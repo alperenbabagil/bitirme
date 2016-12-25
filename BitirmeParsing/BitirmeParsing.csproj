@@ -53,6 +53,7 @@
     <Compile Include="MovieParser\Movie.cs" />
     <Compile Include="MovieParser\MovieParser.cs" />
     <Compile Include="MySQLConnectionTest.cs" />
+    <Compile Include="ParserBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -61,7 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ColorParser\" />
-    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

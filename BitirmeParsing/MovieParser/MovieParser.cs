@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BitirmeParsing.MovieParser
 {
-    class MovieParser
+    public class MovieParser
     {
         List<Movie> bufferList;
 

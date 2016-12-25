@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using BitirmeParsing.DBConnection;
+using System.Configuration;
 
 namespace BitirmeParsing.GenreParser
 {
-    class GenreParser
+    public class GenreParser
     {
         List<Genre> bufferList;
 
@@ -37,7 +38,8 @@ namespace BitirmeParsing.GenreParser
             long addCounter = 0;
             Task.Run(() =>
             {
-                using (FileStream fs = File.Open(@"C:\Users\Bilal\Documents\GitHub\bitirme\BitirmeParsing\genres.list", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+ 
+            using (FileStream fs = File.Open(ConfigurationSettings.AppSettings["genresListLocation"], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (BufferedStream bs = new BufferedStream(fs))
             using (StreamReader sr = new StreamReader(bs))
             {
@@ -54,29 +56,32 @@ namespace BitirmeParsing.GenreParser
                     if (fields[0] != null)
                     {
                         int length = fields.Length;
-                        if (fields[0].Contains("("))
-                        {
-                            count = fields[0].Count(c => c == '(');
-                            //count = fields[0].Split('/').Length - 1;            // eğer ismin içinde yılın haricinde bir parantez daha varsa
-                            if (count > 1)
-                            {
-                                continue;
-                            }
-                        }
+                        //if (fields[0].Contains("("))
+                        //{
+                        //    count = fields[0].Count(c => c == '(');
+                        //    //count = fields[0].Split('/').Length - 1;            // eğer ismin içinde yılın haricinde bir parantez daha varsa
+                        //    if (count > 1)
+                        //    {
+                        //        continue;
+                        //    }
+                        //}
 
-                        movieName = fields[0].Substring(0, fields[0].IndexOf('('));
-                        if (movieName.Contains('"'))
-                        {
-                            movieName = movieName.Replace('"',' ');
-                        }
+                        //movieName = fields[0].Substring(0, fields[0].IndexOf('('));
+                        //if (movieName.Contains('"'))
+                        //{
+                        //    movieName = movieName.Replace('"',' ');
+                        //}
+
+                        movieName = MovieParser.MovieParser.extractDbText(fields[0]); //genel isim extract fonksiyonu. Daha sonra düzenlenecek
+
                         genreName = fields[length - 1];
                         if (genreName.Contains('"'))
                         {
                             genreName = genreName.Replace('"',' ');
                         }
                         
-                        movieName = movieName.Remove(0,1);              // Baştaki ve sondaki boşluğu silmek için yazıldı
-                        movieName = movieName.Remove(movieName.Length - 1);
+                        //movieName = movieName.Remove(0,1);              // Baştaki ve sondaki boşluğu silmek için yazıldı
+                        //movieName = movieName.Remove(movieName.Length - 1);
 
                        
                         string nameMovieTable = string.Empty;
