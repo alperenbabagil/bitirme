@@ -8,7 +8,7 @@ namespace BitirmeParsing
 {
     class Director
     {
-        List<Movie> movies;
+        public List<Movie> movies;
 
         public int id { get; set;}
 

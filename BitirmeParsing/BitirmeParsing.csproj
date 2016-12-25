@@ -47,8 +47,10 @@
     <Compile Include="DBConnection\DBHelper.cs" />
     <Compile Include="DirectorParser\Director.cs" />
     <Compile Include="DirectorParser\DirectorParser.cs" />
+    <Compile Include="GenreParser\Genre.cs" />
+    <Compile Include="GenreParser\GenreParser.cs" />
     <Compile Include="GlobalVariables.cs" />
-    <Compile Include="Movie.cs" />
+    <Compile Include="MovieParser\Movie.cs" />
     <Compile Include="MovieParser\MovieParser.cs" />
     <Compile Include="MySQLConnectionTest.cs" />
     <Compile Include="Program.cs" />
@@ -56,6 +58,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ColorParser\" />
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

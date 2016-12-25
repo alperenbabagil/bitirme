@@ -1,11 +1,18 @@
-﻿using MySql.Data.MySqlClient;
+﻿
+using BitirmeParsing.GenreParser;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// director id'nin aynı anda oluşmasına dikkat
+//
 namespace BitirmeParsing.DBConnection
 {
     class DBHelper
@@ -21,14 +28,23 @@ namespace BitirmeParsing.DBConnection
             }
         }
 
+        Stopwatch stopwatch = new Stopwatch();
+
         private DBHelper() { }
 
         private MySqlConnection connection;
 
-        string myConnectionString = "server=127.0.0.1;uid=root;" +
-            "pwd=asede;database=bitirme;";
+        public int updateCtr = 0;
+
+        //string myConnectionString = "server=localhost; uid=root;" + "pwd=1234; database=bitirme;";
+        string myConnectionString = ConfigurationSettings.AppSettings["mysqlConnectionString"];
+
 
         public long addMovieCounter = 0;
+        public long addGenreCounter = 0;
+        public int addColorCounter = 0;
+        public int updateMovieCounter = 0;
+        public int nullNameCounter = 0;
 
         public bool openConnection()
         {
@@ -58,103 +74,67 @@ namespace BitirmeParsing.DBConnection
             }
         }
 
-        public void addMovie(List<Movie> movies)
+        public void addMovie(List<Movie> movies,string tableName)
         {
 
-            List<string> names = new List<string>();
-            List<string> nameyear = new List<string>();
-            //List<string> years = new List<string>();
-            List<int> years = new List<int>();
-            foreach (Movie movie in movies)
+            using (var connection = new MySql.Data.MySqlClient.MySqlConnection())
             {
-                nameyear.Add(movie.Name + "," + movie.Year.ToString());
-                //names.Add(movie.Name);
-                //years.Add(movie.Year.ToString());
-                //years.Add(movie.Year);
-                //command.Parameters.AddRange
+                connection.ConnectionString = myConnectionString;
+                connection.Open();
+
+                if (connection != null)
+                {
+                    MySqlCommand command = connection.CreateCommand();
+
+                    
+                    //string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year,directorId,color,country,rating,certificate,runningTime) VALUES ", tableName);
+                    string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year) VALUES ", tableName);
+
+                    int counter = 0;
+
+                    string sql = string.Empty;
+
+                    foreach (Movie movie in movies)
+                    {
+                        if (movie.Name == null)
+                        {
+                            nullNameCounter++;
+                            Console.WriteLine("nullname ctr " + nullNameCounter);
+                        }
+                        //sql += "(@name" + counter + ", @year" + counter + ", @directorId" + counter + "),";
+
+                        //sql += string.Format("(@name{0},@year{0},@directorId{0},@color{0},@country{0},@rating{0},@certificate{0},@runningTime{0}),", counter);
+                        sql += string.Format("(@name{0},@year{0}),", counter);
+                        
+                        command.Parameters.Add(new MySqlParameter("name" + counter, movie.Name));
+                        command.Parameters.Add(new MySqlParameter("year" + counter, movie.Year.ToString()));
+                        //command.Parameters.Add(new MySqlParameter("directorId" + counter, movie.directorId.ToString()));
+                        //command.Parameters.Add(new MySqlParameter("color" + counter, movie.color));
+                        //command.Parameters.Add(new MySqlParameter("country" + counter, movie.country));
+                        //command.Parameters.Add(new MySqlParameter("rating" + counter, movie.rating.ToString()));
+                        //command.Parameters.Add(new MySqlParameter("certificate" + counter, movie.certificate));
+                        //command.Parameters.Add(new MySqlParameter("runningTime" + counter, movie.runningTime.ToString()));
+                        counter++;
+                    }
+                    command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
+                                                                                                
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        addMovieCounter++;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("addMovie error " + e.Message);
+                        Console.WriteLine("addMovie error Movie:" + movies[movies.Count - 1].ToString());
+                    }
+
+                }
             }
-            //string query = "SET autocommit = 0; ";
 
 
-            if (connection!=null)
-            {
-                //create command and assign the query and connection from the constructor
-
-                MySqlCommand command = connection.CreateCommand();
-
-                //command.CommandText = "SET autocommit = 0; INSERT INTO movie_deneme (name, year) VALUES (?name,?year); COMMIT;";
-                
-
-                //var param1 = command.Parameters.Add("?nameyear", MySqlDbType.VarChar);
-                //var param2 = command.Parameters.Add("?year", MySqlDbType.Int32);
-
-                //param1.Value = string.Join(",", nameyear);
-                //param2.Value = string.Join(",", years);
-
-                //command.CommandText = @"SET autocommit = 0; INSERT INTO movie_deneme (name, year) VALUES (?name,?year); COMMIT;";
-                //command.CommandText = @"SET autocommit = 0; INSERT INTO movie_deneme (name,year) VALUES (?name,?year); COMMIT;";
-                //command.CommandText = @"SET autocommit = 0; INSERT INTO movie_deneme (name,year) VALUES (?nameyear); COMMIT;";
-
-                //foreach (Movie movie in movies)
-                //{
-
-                //    //command.Parameters.AddWithValue("?name", movie.Name);
-                //    var param1 = command.Parameters.Add("?name", MySqlDbType.VarChar);
-                //    var param2 = command.Parameters.Add("?year", MySqlDbType.Int32);
-
-                //    param1.Value = string.Join(",", names);
-                //    param2.Value = string.Join(",", years);
-
-                //    //command.Parameters.AddWithValue("?year", movie.Year);
-                //    //command.Parameters.AddRange
-                //}
-
-                //Execute command
-
-                //const string refcmdText = " INSERT INTO Entries (name, year) VALUES (@name,@year);";
-                //int count = 0;
-                //string query = string.Empty;
-                ////build a large query
-                //foreach (Movie movie in movies)
-                //{
-                //    query += string.Format(refcmdText, count);
-                //    command.Parameters.AddWithValue("@name",  movie.Name);
-                //    command.Parameters.AddWithValue("@year",  movie.Year);
-                //    count++;
-                //}
-
-                ////query +=" COMMIT;";
-                //command.CommandText = query;
-
-                string cmd = "SET autocommit = 0; INSERT INTO movie_deneme VALUES ";
-                //string cmd = " INSERT INTO movie_deneme VALUES ";
-                int counter = 0;
-
-                string sql = string.Empty;
-
-                foreach (Movie movie in movies)
-                {
-                    sql += "(NULL,@name" + counter + ", @year" + counter + "),";
-                    command.Parameters.Add(new MySqlParameter("name" + counter, movie.Name));
-                    command.Parameters.Add(new MySqlParameter("year" + counter, movie.Year.ToString()));
-                    counter++;
-                }
-
-                command.CommandText = cmd+sql.Substring(0, sql.Length - 1)+ "; COMMIT;"; //Remove ',' at the end
-                //command.CommandText = cmd+sql.Substring(0, sql.Length - 1); //Remove ',' at the end
-
-                try
-                {
-                    command.ExecuteNonQuery();
-                    addMovieCounter++;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("addMovie error " + e.Message);
-                    Console.WriteLine("addMovie error Movie:" + movies[movies.Count-1].ToString());
-                }
-                
-            }
+             
         }
 
         public int searchMovie(string name)
@@ -193,5 +173,257 @@ namespace BitirmeParsing.DBConnection
         //    return parameters.ToArray();
         //}
 
+        public void addGenres(List<Genre> genres)
+        {
+            List<string> nameGenre = new List<string>();
+            foreach (Genre genre in genres)
+            {
+                nameGenre.Add(genre.movieId + "," + genre.genreName);
+            }
+
+            if (connection != null)
+            {
+
+                MySqlCommand command = connection.CreateCommand();
+
+                string cmd = "SET autocommit = 0; INSERT INTO moviegenre VALUES ";
+                int counter = 0;
+
+                string sql = string.Empty;
+                foreach (Genre genre in genres)
+                {
+                    sql += "(NULL,@genreId" + counter + ", @genrename" + counter + "),";
+                    command.Parameters.Add(new MySqlParameter("movieId" + counter, genre.movieId));
+                    command.Parameters.Add(new MySqlParameter("genrename" + counter, genre.genreName));
+                    counter++;
+                }
+                command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
+                //command.CommandText = cmd+sql.Substring(0, sql.Length - 1); //Remove ',' at the end
+                try
+                {
+                    command.ExecuteNonQuery();
+                    addGenreCounter++;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("addGenre error " + e.Message);
+                    Console.WriteLine("addGenre error Genre:" + genres[genres.Count - 1].ToString());
+                }
+            }
+        }
+
+        public void addDirectors(List<Director> directors)
+        {
+            openConnection();
+            if (connection != null)
+            {
+                //create command and assign the query and connection from the constructor
+
+                MySqlCommand command = connection.CreateCommand();
+
+                string cmd = "SET autocommit = 0; INSERT INTO director (id,name) VALUES ";
+                //string cmd = " INSERT INTO movie_deneme VALUES ";
+                int counter = 0;
+
+                string sql = string.Empty;
+
+                foreach (Director director in directors)
+                {
+                    //sql += "(null,@name" + counter + ", @year" + counter + ",null,null,null,null,null,null)";
+                    //command.Parameters.Add(new MySqlParameter("name" + counter, movie.Name));
+                    //command.Parameters.Add(new MySqlParameter("year" + counter, movie.Year.ToString()));
+                    ////command.Parameters.Add(new MySqlParameter("genreId" + counter, null));
+                    //command.Parameters.Add(new MySqlParameter("directorId" + counter, null));
+                    //command.Parameters.Add(new MySqlParameter("color" + counter, null));
+                    //command.Parameters.Add(new MySqlParameter("moviecol" + counter, null));
+                    //command.Parameters.Add(new MySqlParameter("country" + counter, null));
+                    //command.Parameters.Add(new MySqlParameter("rating" + counter, null));
+                    //command.Parameters.Add(new MySqlParameter("certificateId" + counter, null));
+                    //command.Parameters.Add(new MySqlParameter("runningTime" + counter, null));
+
+                    sql += "(@id" + counter + ", @name" + counter + "),";
+                    command.Parameters.Add(new MySqlParameter("id" + counter, director.id.ToString()));
+                    command.Parameters.Add(new MySqlParameter("name" + counter, director.Name));
+                    counter++;
+                }
+
+                command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
+                //command.CommandText = cmd+sql.Substring(0, sql.Length - 1); //Remove ',' at the end
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                    //addMovieCounter++;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("addMovie error " + e.Message);
+                    //Console.WriteLine("addMovie error Movie:" + movies[movies.Count - 1].ToString());
+                }
+            }
+        }
+
+        public int findMovieId(string movieName)
+        {
+            int id = 0;
+            if (connection == null) openConnection();
+            
+                
+                //var sqlQuery = "Select id from movie where name = '" + movieName + "';";
+                var sqlQuery = "Select id from movie_dir_id where name = '" + movieName + "';";
+
+                MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
+                //cmd.Parameters.AddWithValue("@pname", movieName);
+                using (MySqlDataReader Reader = cmd.ExecuteReader())
+                {
+                    while (Reader.Read())
+                    {
+                        id = Int32.Parse(Reader.GetString("id"));
+
+                    }
+                }
+            return id;
+        }
+
+        public Movie getMovieByProperty(string propertyName,string property,bool putQuotes)
+        {
+            if (connection == null) openConnection();
+            Movie newMovie = new Movie();
+            string sqlQuery = null;
+            if (putQuotes) sqlQuery = string.Format("Select * from movie where {0} = '{1}'",propertyName,property);
+            else sqlQuery = string.Format("Select * from movie where {0} = {1}",propertyName,property);
+
+            MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
+            //cmd.Parameters.AddWithValue("@pname", movieName);
+            using (MySqlDataReader Reader = cmd.ExecuteReader())
+            {
+                while (Reader.Read())
+                {
+                    try
+                    {
+                        newMovie.Name = (Reader.IsDBNull(Reader.GetOrdinal("name"))) ? null : Reader.GetString("name");
+                        newMovie.color = (Reader.IsDBNull(Reader.GetOrdinal("color"))) ? null : Reader.GetString("color");
+                        newMovie.country = (Reader.IsDBNull(Reader.GetOrdinal("country"))) ? null : Reader.GetString("country");
+                        newMovie.certificate = (Reader.IsDBNull(Reader.GetOrdinal("certificate"))) ? null : Reader.GetString("certificate");
+                        var Year = (Reader.IsDBNull(Reader.GetOrdinal("year"))) ? null : Reader.GetString("year");
+                        var directorId = (Reader.IsDBNull(Reader.GetOrdinal("directorId"))) ? null : Reader.GetString("directorId");
+                        var id = (Reader.IsDBNull(Reader.GetOrdinal("id"))) ? null : Reader.GetString("id");
+                        var rating = (Reader.IsDBNull(Reader.GetOrdinal("rating"))) ? null : Reader.GetString("rating");
+                        var runningTime = (Reader.IsDBNull(Reader.GetOrdinal("runningTime"))) ? null : Reader.GetString("runningTime");
+
+                        newMovie.id = (id != null) ? Int32.Parse(id) : -1;
+                        newMovie.Year = (Year != null) ? Int32.Parse(Year) : -1;
+                        newMovie.directorId = (directorId != null) ? Int32.Parse(directorId) : -1;
+                        newMovie.runningTime = (runningTime != null) ? Int32.Parse(runningTime) : -1;
+                        newMovie.rating = (rating != null) ? float.Parse(runningTime) : -1;
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
+                    
+                }
+            }
+            return newMovie;
+        }
+
+        public void updateMovieDirectorColumn(string movieName,int directorId)
+        {
+            if (connection == null) openConnection();
+
+            //MySqlCommand command = connection.CreateCommand();
+            //var sqlQuery = "Select id from movie where name = '" + movieName + "';";
+            var sqlQuery = string.Format(" SET autocommit = 0; UPDATE movie SET directorId={0} WHERE name='{1}'", directorId,movieName);
+
+            if (updateCtr % 1000 == 0) sqlQuery=string.Format("UPDATE movie SET directorId={0} WHERE name='{1}'; COMMIT;", directorId, movieName);
+            MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
+            //cmd.Parameters.AddWithValue("@pname", movieName);
+            try
+            {
+                cmd.ExecuteNonQuery();
+                updateCtr++;
+                if (updateCtr % 1000 == 0)
+                {
+                    Console.WriteLine(DateTime.Now);
+                    Console.WriteLine(updateCtr);
+                }
+
+                    
+            }
+            catch (Exception e)
+            {
+
+            }
+            
+        }
+
+        public void updateMovieDirectorColumn2(List<Director> directors)
+        {
+            if (connection == null) openConnection();
+
+            MySqlCommand command = connection.CreateCommand();
+
+            string cmd = "SET autocommit = 0; UPDATE bitirme.movie SET directorId= CASE ";
+
+            string sql = "";
+
+            string whereSet = "";
+
+            foreach (Director director in directors)
+            {
+
+                foreach (Movie movie in director.movies)
+                {
+                    sql += string.Format("WHEN name='{0}' THEN {1} ", movie.Name, director.id);
+                    updateMovieCounter++;
+                    if (updateMovieCounter % 1000 == 0) Console.WriteLine(updateMovieCounter);
+                    whereSet += ("'"+movie.Name+"',");
+                }
+
+            }
+
+            whereSet= whereSet.Substring(0, whereSet.Length - 1);
+
+            sql += " ELSE name END";
+
+            cmd += (sql + " WHERE name IN (" + whereSet + ")");
+
+            command.CommandText = cmd + "; COMMIT;";
+            try
+            {
+                //stopwatch.Start();
+               // if (!stopwatch.IsRunning) stopwatch.Start();
+                //Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+                
+                command.ExecuteNonQuery();
+                updateCtr++;
+                if (updateCtr % 1000 == 0)
+                {
+                    //stopwatch.Stop();
+                    // if (!stopwatch.IsRunning) stopwatch.Start();
+                    Console.WriteLine(DateTime.Now);                   
+                   // stopwatch.Start();
+                }
+                //stopwatch.Stop();
+                //stopwatch.Start();
+                //Console.WriteLine(updateCtr);
+
+                //Console.WriteLine(updateCtr);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+        }
+
+
     }
 }
+
+//
+//Console.WriteLine("start "+DateTime.Now.Second);
+
+//stopwatch.Start();
+//DBHelper.Instance.searchMovie(null);
+//stopwatch.Stop();

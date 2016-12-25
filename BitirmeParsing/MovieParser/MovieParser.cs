@@ -1,7 +1,8 @@
-﻿ using BitirmeParsing.DBConnection;
+﻿using BitirmeParsing.DBConnection;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,10 +29,10 @@ namespace BitirmeParsing.MovieParser
 
             Task.Run(() =>
             {
-                //using (FileStream fs = File.Open(@"C:\Users\alperen\Desktop\bitirme\parsing\movies.list", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (FileStream fs = File.Open(@"C:\Users\alperen\Desktop\bitirme\temiz list\movies.list", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (FileStream fs = File.Open(ConfigurationSettings.AppSettings["moviesListLocation"], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                //using (FileStream fs = File.Open(@"C:\Users\bgulsen\Documents\Visual Studio 2015\Projects\bitirme\BitirmeParsing\movies.list", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (BufferedStream bs = new BufferedStream(fs))
-                using (StreamReader sr = new StreamReader(bs, System.Text.Encoding.Default))
+                using (StreamReader sr = new StreamReader(bs, System.Text.Encoding.Default))        //!!!!!!!!!
                 {
                     string line;
                     string[] fields;
@@ -51,9 +52,7 @@ namespace BitirmeParsing.MovieParser
 
                             string yearString = fields[0].Substring(fields[0].IndexOf('(') + 1, 4);
 
-                            string nameString = fields[0].Substring(0, fields[0].IndexOf('('));
-
-                            nameString = nameString.Replace("\"", "");
+                            string nameString = extractDbText(fields[0]);
 
                             int year = 0;
 
@@ -128,10 +127,30 @@ namespace BitirmeParsing.MovieParser
 
         }
 
+        public static string extractDbText(string movieName)
+        {
+            //string yearString = fields[0].Substring(fields[0].IndexOf('(') + 1, 4);
+            try
+            {
+                string nameString = movieName.Substring(0, movieName.IndexOf('('));
+
+                nameString = nameString.Replace("\"", "");
+                nameString = nameString.Replace("'", "");
+                nameString = nameString.Substring(0,nameString.Length-1);
+                return nameString;
+            }
+            catch (Exception e)
+            {
+                return " ";
+            }
+            
+
+            
+        }
+
         void addMovieToDb(List<Movie> movies)
         {
-            DBHelper.Instance.addMovie(movies);
-
+            DBHelper.Instance.addMovie(movies,"movie");
         }
     }
 }
