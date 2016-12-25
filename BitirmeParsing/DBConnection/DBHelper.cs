@@ -11,8 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-// director id'nin aynı anda oluşmasına dikkat
-//
 namespace BitirmeParsing.DBConnection
 {
     public class DBHelper
@@ -74,7 +72,7 @@ namespace BitirmeParsing.DBConnection
             }
         }
 
-        public void addMovie(List<Movie> movies,string tableName)
+        public void addMovie(List<Movie> movies, string tableName)
         {
 
             using (var connection = new MySql.Data.MySqlClient.MySqlConnection())
@@ -86,9 +84,9 @@ namespace BitirmeParsing.DBConnection
                 {
                     MySqlCommand command = connection.CreateCommand();
 
-                    
+
                     //string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year,directorId,color,country,rating,certificate,runningTime) VALUES ", tableName);
-                    string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year) VALUES ", tableName);
+                    string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year,color) VALUES ", tableName);
 
                     int counter = 0;
 
@@ -104,12 +102,12 @@ namespace BitirmeParsing.DBConnection
                         //sql += "(@name" + counter + ", @year" + counter + ", @directorId" + counter + "),";
 
                         //sql += string.Format("(@name{0},@year{0},@directorId{0},@color{0},@country{0},@rating{0},@certificate{0},@runningTime{0}),", counter);
-                        sql += string.Format("(@name{0},@year{0}),", counter);
-                        
+                        sql += string.Format("(@name{0},@year{0},@color{0}),", counter);
+
                         command.Parameters.Add(new MySqlParameter("name" + counter, movie.Name));
                         command.Parameters.Add(new MySqlParameter("year" + counter, movie.Year.ToString()));
                         //command.Parameters.Add(new MySqlParameter("directorId" + counter, movie.directorId.ToString()));
-                        //command.Parameters.Add(new MySqlParameter("color" + counter, movie.color));
+                        command.Parameters.Add(new MySqlParameter("color" + counter, movie.color));
                         //command.Parameters.Add(new MySqlParameter("country" + counter, movie.country));
                         //command.Parameters.Add(new MySqlParameter("rating" + counter, movie.rating.ToString()));
                         //command.Parameters.Add(new MySqlParameter("certificate" + counter, movie.certificate));
@@ -117,7 +115,7 @@ namespace BitirmeParsing.DBConnection
                         counter++;
                     }
                     command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
-                                                                                                
+
 
                     try
                     {
@@ -134,23 +132,23 @@ namespace BitirmeParsing.DBConnection
             }
 
 
-             
+
         }
 
-        public int searchMovie(string name)
-            {
-            openConnection();
-            MySqlCommand command = connection.CreateCommand();
+        //public int searchMovie(string name)
+        //    {
+        //    openConnection();
+        //    MySqlCommand command = connection.CreateCommand();
 
-            for (int i = 0; i < 100000; i++)
-                {                   
-                    string cmd = "SELECT name FROM movie_deneme WHERE name = 'Nenasytnye';  ";
-                    command.CommandText = cmd;
-                    command.ExecuteNonQuery();
-                }
-                
-                return 0;
-            } 
+        //    for (int i = 0; i < 100000; i++)
+        //        {                   
+        //            string cmd = "SELECT name FROM movie_deneme WHERE name = 'Nenasytnye';  ";
+        //            command.CommandText = cmd;
+        //            command.ExecuteNonQuery();
+        //        }
+
+        //        return 0;
+        //    } 
 
         //private SqlParameter[] AddArrayParameters<T>(this SqlCommand cmd, IEnumerable<T> values, string paramNameRoot, int start = 1, string separator = ", ")
         //{
@@ -267,31 +265,31 @@ namespace BitirmeParsing.DBConnection
         {
             int id = 0;
             if (connection == null) openConnection();
-            
-                
-                //var sqlQuery = "Select id from movie where name = '" + movieName + "';";
-                var sqlQuery = "Select id from movie_dir_id where name = '" + movieName + "';";
 
-                MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
-                //cmd.Parameters.AddWithValue("@pname", movieName);
-                using (MySqlDataReader Reader = cmd.ExecuteReader())
+
+            //var sqlQuery = "Select id from movie where name = '" + movieName + "';";
+            var sqlQuery = "Select id from movie_dir_id where name = '" + movieName + "';";
+
+            MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
+            //cmd.Parameters.AddWithValue("@pname", movieName);
+            using (MySqlDataReader Reader = cmd.ExecuteReader())
+            {
+                while (Reader.Read())
                 {
-                    while (Reader.Read())
-                    {
-                        id = Int32.Parse(Reader.GetString("id"));
+                    id = Int32.Parse(Reader.GetString("id"));
 
-                    }
                 }
+            }
             return id;
         }
 
-        public Movie getMovieByProperty(string propertyName,string property,bool putQuotes)
+        public Movie getMovieByProperty(string propertyName, string property, bool putQuotes)
         {
             if (connection == null) openConnection();
             Movie newMovie = new Movie();
             string sqlQuery = null;
-            if (putQuotes) sqlQuery = string.Format("Select * from movie where {0} = '{1}'",propertyName,property);
-            else sqlQuery = string.Format("Select * from movie where {0} = {1}",propertyName,property);
+            if (putQuotes) sqlQuery = string.Format("Select * from movie where {0} = '{1}'", propertyName, property);
+            else sqlQuery = string.Format("Select * from movie where {0} = {1}", propertyName, property);
 
             MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
             //cmd.Parameters.AddWithValue("@pname", movieName);
@@ -317,25 +315,25 @@ namespace BitirmeParsing.DBConnection
                         newMovie.runningTime = (runningTime != null) ? Int32.Parse(runningTime) : -1;
                         newMovie.rating = (rating != null) ? float.Parse(runningTime) : -1;
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
 
                     }
-                    
+
                 }
             }
             return newMovie;
         }
 
-        public void updateMovieDirectorColumn(string movieName,int directorId)
+        public void updateMovieDirectorColumn(string movieName, int directorId)
         {
             if (connection == null) openConnection();
 
             //MySqlCommand command = connection.CreateCommand();
             //var sqlQuery = "Select id from movie where name = '" + movieName + "';";
-            var sqlQuery = string.Format(" SET autocommit = 0; UPDATE movie SET directorId={0} WHERE name='{1}'", directorId,movieName);
+            var sqlQuery = string.Format(" SET autocommit = 0; UPDATE movie SET directorId={0} WHERE name='{1}'", directorId, movieName);
 
-            if (updateCtr % 1000 == 0) sqlQuery=string.Format("UPDATE movie SET directorId={0} WHERE name='{1}'; COMMIT;", directorId, movieName);
+            if (updateCtr % 1000 == 0) sqlQuery = string.Format("UPDATE movie SET directorId={0} WHERE name='{1}'; COMMIT;", directorId, movieName);
             MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
             //cmd.Parameters.AddWithValue("@pname", movieName);
             try
@@ -348,13 +346,13 @@ namespace BitirmeParsing.DBConnection
                     Console.WriteLine(updateCtr);
                 }
 
-                    
+
             }
             catch (Exception e)
             {
 
             }
-            
+
         }
 
         public void updateMovieDirectorColumn2(List<Director> directors)
@@ -377,12 +375,12 @@ namespace BitirmeParsing.DBConnection
                     sql += string.Format("WHEN name='{0}' THEN {1} ", movie.Name, director.id);
                     updateMovieCounter++;
                     if (updateMovieCounter % 1000 == 0) Console.WriteLine(updateMovieCounter);
-                    whereSet += ("'"+movie.Name+"',");
+                    whereSet += ("'" + movie.Name + "',");
                 }
 
             }
 
-            whereSet= whereSet.Substring(0, whereSet.Length - 1);
+            whereSet = whereSet.Substring(0, whereSet.Length - 1);
 
             sql += " ELSE name END";
 
@@ -392,17 +390,17 @@ namespace BitirmeParsing.DBConnection
             try
             {
                 //stopwatch.Start();
-               // if (!stopwatch.IsRunning) stopwatch.Start();
+                // if (!stopwatch.IsRunning) stopwatch.Start();
                 //Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
-                
+
                 command.ExecuteNonQuery();
                 updateCtr++;
                 if (updateCtr % 1000 == 0)
                 {
                     //stopwatch.Stop();
                     // if (!stopwatch.IsRunning) stopwatch.Start();
-                    Console.WriteLine(DateTime.Now);                   
-                   // stopwatch.Start();
+                    Console.WriteLine(DateTime.Now);
+                    // stopwatch.Start();
                 }
                 //stopwatch.Stop();
                 //stopwatch.Start();
@@ -412,9 +410,8 @@ namespace BitirmeParsing.DBConnection
             }
             catch (Exception e)
             {
-
+                // ignored
             }
-
         }
 
 
