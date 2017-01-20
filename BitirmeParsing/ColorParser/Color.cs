@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BitirmeParsing
+namespace BitirmeParsing.ColorParser
 {
-    public class Director
+    public class Color
     {
         public List<Movie> movies;
 
-        public int id { get; set;}
+        public int id { get; set; }
 
         public string Name { get; set; }
 
-        public Director()
+        public Color()
         {
             movies = new List<Movie>();
         }
