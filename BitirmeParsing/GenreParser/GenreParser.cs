@@ -13,6 +13,12 @@ namespace BitirmeParsing.GenreParser
 {
     public class GenreParser
     {
+        string newTableName;
+
+        public GenreParser(string newTableName_)
+        {
+            newTableName = newTableName_;
+        }
         List<Genre> bufferList;
 
         BlockingCollection<List<Genre>> dataItems;
@@ -150,7 +156,7 @@ namespace BitirmeParsing.GenreParser
         }
         void addGenretoDb(List<Genre> genres)
         {
-            DBHelper.Instance.addGenres(genres);
+            DBHelper.Instance.addGenres(genres,newTableName);
         }
     }
 }

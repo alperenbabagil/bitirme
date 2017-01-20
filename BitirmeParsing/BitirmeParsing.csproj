@@ -44,9 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActorParser\Actor.cs" />
+    <Compile Include="ActorParser\ActorMovie.cs" />
+    <Compile Include="ActorParser\ActorMovieParser.cs" />
+    <Compile Include="ActorParser\ActorParser.cs" />
     <Compile Include="DBConnection\DBHelper.cs" />
     <Compile Include="DirectorParser\Director.cs" />
     <Compile Include="DirectorParser\DirectorParser.cs" />
+    <Compile Include="DirectorParser\MovieDirectorUpdateParser.cs" />
     <Compile Include="GenreParser\Genre.cs" />
     <Compile Include="GenreParser\GenreParser.cs" />
     <Compile Include="GlobalVariables.cs" />
@@ -56,6 +61,12 @@
     <Compile Include="ParserBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RatingParser\RatingParser.cs" />
+    <Compile Include="RunningTimesParser\RunningTimesParser.cs" />
+    <Compile Include="SoundTrackParser\Soundtrack.cs" />
+    <Compile Include="SoundTrackParser\SoundtrackMovie.cs" />
+    <Compile Include="SoundTrackParser\SoundtrackMovieParser.cs" />
+    <Compile Include="SoundTrackParser\SoundtrackParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

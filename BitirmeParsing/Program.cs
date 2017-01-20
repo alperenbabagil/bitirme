@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+using System.Globalization;
 
 namespace BitirmeParsing
 {
@@ -14,6 +15,10 @@ namespace BitirmeParsing
     {
         public Program()
         {
+
+            if (Debugger.IsAttached)
+                CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+
             //Console.WriteLine(ConfigurationSettings.AppSettings["mysqlConnectionString"]);
             //Console.WriteLine(ConfigurationManager.AppSettings["countoffiles"]);
             // test bilal
@@ -32,9 +37,16 @@ namespace BitirmeParsing
             //new DirectorParser.DirectorParser().Parse();
             ////Console.WriteLine("movie counter db: "+DBHelper.Instance.addMovieCounter);
 
-            var vc = DBConnection.DBHelper.Instance.getMovieByProperty("name", "Way Out",true);
+            //var vc = DBConnection.DBHelper.Instance.getMovieByProperty("name", "Way Out",true);
 
-            bool isConnectionAvaliable=MySQLConnectionTest.testConnection();
+            //new RatingParser.RatingParser().Parse();
+            //new SoundTrackParser.SoundtrackParser().Parse();
+            new SoundTrackParser.SoundtrackMovieParser().Parse();
+
+            //new ActorParser.ActorParser().Parse();
+            //new ActorParser.ActorMovieParser().Parse();
+
+            //bool isConnectionAvaliable=MySQLConnectionTest.testConnection();
             //new ColorParser.ColorParser().Parse();
             //Console.WriteLine("color counter db " + DBHelper.Instance.addColorCounter);
             //new GenreParser.GenreParser().Parse();
@@ -43,10 +55,24 @@ namespace BitirmeParsing
             //new MovieParser.MovieParser().Parse();
             //Console.WriteLine("movie counter db: " + DBHelper.Instance.addMovieCounter);
 
+
+
+
+
+            //new DirectorParser.DirectorParser().Parse();
+
             Console.ReadLine();
 
 
 
+        }
+
+        void programOrdered()
+        {
+            
+            new MovieParser.MovieParser().Parse();
+            new ActorParser.ActorMovieParser().Parse();
+            new SoundTrackParser.SoundtrackMovie();
         }
         static void Main(string[] args)
         {

@@ -14,6 +14,8 @@ namespace BitirmeParsing
 
         public BlockingCollection<List<T>> dataItems;
 
+        public int addCounter = 0;
+
         public void Parse()
         {
             dataItems = new BlockingCollection<List<T>>();
@@ -22,12 +24,14 @@ namespace BitirmeParsing
 
             bufferList = new List<T>();
 
-            long addCounter = 0;
+            
 
             Task.Run(() =>
             {
                 parseLogic(dataItems);
             });
+
+            
 
             while (!dataItems.IsCompleted)
             {
@@ -49,6 +53,7 @@ namespace BitirmeParsing
         }
 
         public abstract void parseLogic(BlockingCollection<List<T>> dataItems);
+
         public abstract void writeLogic(List<T> writeList);
     }
 }

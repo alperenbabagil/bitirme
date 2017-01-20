@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BitirmeParsing.SoundTrackParser;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,7 @@ namespace BitirmeParsing
         public string certificate { get; set; }
         public float rating { get; set; }
         public int runningTime { get; set; }
+        public List<Soundtrack> soundtracks { get; set; }
 
     }
 }
