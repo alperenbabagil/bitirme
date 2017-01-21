@@ -50,12 +50,17 @@
     <Compile Include="ActorParser\ActorMovie.cs" />
     <Compile Include="ActorParser\ActorMovieParser.cs" />
     <Compile Include="ActorParser\ActorParser.cs" />
+    <Compile Include="ColorParser\ColorParser.cs" />
+    <Compile Include="CountryParser\CountryParser.cs" />
     <Compile Include="DBConnection\DBHelper.cs" />
     <Compile Include="DirectorParser\Director.cs" />
     <Compile Include="DirectorParser\DirectorParser.cs" />
     <Compile Include="DirectorParser\MovieDirectorUpdateParser.cs" />
     <Compile Include="GenreParser\Genre.cs" />
+    <Compile Include="GenreParser\GenreMovie.cs" />
+    <Compile Include="GenreParser\GenreMovieParser.cs" />
     <Compile Include="GenreParser\GenreParser.cs" />
+    <Compile Include="GenreParser\GenreParserAlperen.cs" />
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="MovieParser\Movie.cs" />
     <Compile Include="MovieParser\MovieParser.cs" />

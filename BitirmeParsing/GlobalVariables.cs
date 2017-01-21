@@ -11,5 +11,7 @@ namespace BitirmeParsing
         public static int writeToDbBulkSize = 2000;
         public static bool nextParser = false;
         //public static 
+
+        
     }
 }

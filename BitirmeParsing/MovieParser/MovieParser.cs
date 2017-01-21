@@ -150,7 +150,7 @@ namespace BitirmeParsing.MovieParser
 
         void addMovieToDb(List<Movie> movies)
         {
-            DBHelper.Instance.addMovie(movies,"movie");
+            DBHelper.Instance.addMovie(movies,"movie_onlyMovie");
         }
     }
 }

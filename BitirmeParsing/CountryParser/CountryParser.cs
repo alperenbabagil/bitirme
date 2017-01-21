@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BitirmeParsing.DBConnection;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
@@ -6,33 +7,22 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BitirmeParsing.DBConnection;
 
-/*
-Important!!!
-Color can be ->
-Color
-HD Black and White
-color and black & white archive footage
-
-
-    For this reason color -> charchar(75)
-*/
-namespace BitirmeParsing.ColorParser
+namespace BitirmeParsing.CountryParser
 {
-    public class ColorParser : ParserBase<Movie>
+    public class CountryParser : ParserBase<Movie>
     {
+
         string newTableName;
 
-        public ColorParser(string newTableName_)
+        public CountryParser(string newTableName_)
         {
             newTableName = newTableName_;
         }
 
         public override void parseLogic(BlockingCollection<List<Movie>> dataItems)
         {
-
-            using (FileStream fs = File.Open(ConfigurationSettings.AppSettings["colorsListLocation"], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (FileStream fs = File.Open(ConfigurationSettings.AppSettings["countryListLocation"], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (BufferedStream bs = new BufferedStream(fs))
             using (StreamReader sr = new StreamReader(bs, System.Text.Encoding.Default))
             {
@@ -52,17 +42,17 @@ namespace BitirmeParsing.ColorParser
                     {
                         movieName = tempName;
                         int index = fields.Length - 1;      // color field'in en sonunda bulunuyor
-                        var colorRawString = fields[index];
+                        var countryRawString = fields[index];
 
                         Movie movie = DBHelper.Instance.getMovieByProperty("movie", "name", movieName, true);
-                        movie.color = colorRawString;
+                        movie.country = countryRawString;
 
                         addCounter++;
 
 
                         if (addCounter % GlobalVariables.writeToDbBulkSize == 0)
                         {
-                            Console.WriteLine("Color update get: " + addCounter + "    " + movie.id);
+                            Console.WriteLine("country update: " + addCounter + "    " + movie.id);
                             dataItems.Add(bufferList);
                             bufferList = new List<Movie>();
                         }
@@ -80,6 +70,5 @@ namespace BitirmeParsing.ColorParser
         {
             DBHelper.Instance.addMovie(writeList, newTableName);
         }
-
     }
 }
