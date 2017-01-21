@@ -69,7 +69,7 @@ namespace BitirmeParsing
 
         void programOrdered()
         {
-            
+
             new MovieParser.MovieParser().Parse();
             new ActorParser.ActorMovieParser().Parse();
             new SoundTrackParser.SoundtrackMovie();
