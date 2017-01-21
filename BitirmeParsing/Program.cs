@@ -81,8 +81,8 @@ namespace BitirmeParsing
         void programOrdered()
         {
             new MovieParser.MovieParser().Parse();
-            new ActorParser.ActorMovieParser("actor").Parse();
-            new ActorParser.ActorMovieParser("actress").Parse();
+            new ActorParser.ActorMovieParser("actormovie").Parse();
+            new ActorParser.ActorMovieParser("actressmovie").Parse();
             //new SoundTrackParser.SoundtrackMovieParser().Parse();
             new GenreParser.GenreMovieParser().Parse();
 
