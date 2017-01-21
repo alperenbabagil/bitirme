@@ -11,9 +11,25 @@ namespace BitirmeParsing.ActorParser
 {
     public class ActorMovieParser : ParserBase<ActorMovie>
     {
+        string fileLoc = "";
+        string tableName = "";
+        public ActorMovieParser(string type)
+        {
+            if (type == "actor")
+            {
+                fileLoc = ConfigurationSettings.AppSettings["actorsListLocation"];
+                tableName = "actor";
+            }
+            else
+            {
+                fileLoc = ConfigurationSettings.AppSettings["actressListLocation"];
+                tableName = "actress";
+            }
+        }
+
         public override void parseLogic(System.Collections.Concurrent.BlockingCollection<List<ActorMovie>> dataItems)
         {
-            using (FileStream fs = File.Open(ConfigurationSettings.AppSettings["actorsListLocation"], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (FileStream fs = File.Open(fileLoc, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             //using (FileStream fs = File.Open(@"C:\Users\bgulsen\Documents\Visual Studio 2015\Projects\bitirme\BitirmeParsing\movies.list", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (BufferedStream bs = new BufferedStream(fs))
             using (StreamReader sr = new StreamReader(bs, System.Text.Encoding.Default))
@@ -88,7 +104,7 @@ namespace BitirmeParsing.ActorParser
 
         public override void writeLogic(List<ActorMovie> writeList)
         {
-            DBHelper.Instance.addActorMovie(writeList);
+            DBHelper.Instance.addActorMovie(writeList,tableName);
         }
 
         void addToList(int addActorId,string currentMovieName)

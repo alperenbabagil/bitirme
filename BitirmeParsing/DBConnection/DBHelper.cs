@@ -76,6 +76,32 @@ namespace BitirmeParsing.DBConnection
             }
         }
 
+
+        public bool resetDb()
+        {
+            if (connection == null) openConnection();
+            if (connection != null)
+            {
+                MySqlCommand command = connection.CreateCommand();
+
+                var sql = ConfigurationSettings.AppSettings["resetDbQuery"];
+
+                command.CommandText = sql;
+
+
+                try
+                {
+                    command.ExecuteNonQuery();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+            return false;
+        }
+
         public void addMovie(List<Movie> movies, string tableName)
         {
 
@@ -158,7 +184,7 @@ namespace BitirmeParsing.DBConnection
 
         }
 
-        public void addActors(List<Actor> actors,string tableName) // actor-actress
+        public void addActors(List<Actor> actors, string tableName) // actor-actress
         {
             using (var connection = new MySql.Data.MySqlClient.MySqlConnection())
             {
@@ -302,7 +328,7 @@ namespace BitirmeParsing.DBConnection
         //    return parameters.ToArray();
         //}
 
-        public void addGenres(List<Genre> genres,string tableName)
+        public void addGenres(List<Genre> genres, string tableName)
         {
             List<string> nameGenre = new List<string>();
             foreach (Genre genre in genres)
@@ -315,7 +341,7 @@ namespace BitirmeParsing.DBConnection
 
                 MySqlCommand command = connection.CreateCommand();
 
-                string cmd = "SET autocommit = 0; INSERT INTO "+tableName+" VALUES ";
+                string cmd = "SET autocommit = 0; INSERT INTO " + tableName + " VALUES ";
                 int counter = 0;
 
                 string sql = string.Empty;
@@ -445,7 +471,7 @@ namespace BitirmeParsing.DBConnection
 
         }
 
-        public void addActorMovie(List<ActorMovie> actorMovies)
+        public void addGenreMovie(List<GenreMovie> genreMovies)
         {
             using (var connection = new MySql.Data.MySqlClient.MySqlConnection())
             {
@@ -456,7 +482,48 @@ namespace BitirmeParsing.DBConnection
                 {
                     MySqlCommand command = connection.CreateCommand();
 
-                    string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (actorid,movieid) VALUES ", "actormovie");
+                    string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (movieid,genre ) VALUES ", "genremovie");
+
+                    int counter = 0;
+
+                    string sql = string.Empty;
+
+                    foreach (GenreMovie genreMovie in genreMovies)
+                    {
+                        sql += string.Format("(@movieid{0},@genre{0}),", counter);
+                        command.Parameters.Add(new MySqlParameter("movieid" + counter, genreMovie.movieId));
+                        command.Parameters.Add(new MySqlParameter("genre" + counter, genreMovie.genre));
+                        counter++;
+                    }
+                    command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
+
+
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("addsoundtrack error " + e.Message);
+                    }
+                }
+            }
+
+        }
+
+
+        public void addActorMovie(List<ActorMovie> actorMovies,string tablename)
+        {
+            using (var connection = new MySql.Data.MySqlClient.MySqlConnection())
+            {
+                connection.ConnectionString = myConnectionString;
+                connection.Open();
+
+                if (connection != null)
+                {
+                    MySqlCommand command = connection.CreateCommand();
+
+                    string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (actorid,movieid) VALUES ", tablename);
 
                     int counter = 0;
 

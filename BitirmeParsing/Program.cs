@@ -52,27 +52,53 @@ namespace BitirmeParsing
             //new GenreParser.GenreParser().Parse();
             //Console.WriteLine("genre counter db " + DBHelper.Instance.addGenreCounter);
 
-            new MovieParser.MovieParser().Parse();
+            //new MovieParser.MovieParser().Parse();
+            //new ColorParser.ColorParser("movieUpdColor").Parse();
+            //new GenreParser.GenreMovieParser().Parse();
+            //new CountryParser.CountryParser("ww").Parse();
             //Console.WriteLine("movie counter db: " + DBHelper.Instance.addMovieCounter);
 
 
 
 
-
-            //new DirectorParser.DirectorParser().Parse();
-
+            //if(DBHelper.Instance.resetDb()) Console.WriteLine("Reset Done");
+            programOrdered();
             Console.ReadLine();
 
 
 
         }
 
+        //DROP TABLE IF EXISTS movie,movie_onlyMovie,movie_directorId,movie_color,movie_country,
+        //   movie_rating,movie_runningTime,
+        //   actor,actormovie,
+        //   director,
+        //   genremovie,
+        //   soundtrack,soundtrackmovie,
+        //   actress,actressmovie ;
+
+
         void programOrdered()
         {
-
             new MovieParser.MovieParser().Parse();
-            new ActorParser.ActorMovieParser().Parse();
-            new SoundTrackParser.SoundtrackMovie();
+            new ActorParser.ActorMovieParser("actor").Parse();
+            new ActorParser.ActorMovieParser("actress").Parse();
+            //new SoundTrackParser.SoundtrackMovieParser().Parse();
+            new GenreParser.GenreMovieParser().Parse();
+
+            new DirectorParser.MovieDirectorUpdateParser("movie_directorId");
+            new RunningTimesParser.RunningTimesParser("movie_runningTime");
+            new RatingParser.RatingParser("movie_rating");
+            new CountryParser.CountryParser("movie_country");
+            new ColorParser.ColorParser("movie_country");
+
+            new DirectorParser.DirectorParser().Parse();
+            //new SoundTrackParser.SoundtrackParser().Parse();
+            new ActorParser.ActorParser("actor").Parse();
+            new ActorParser.ActorParser("actress").Parse();
+
+
+            //new SoundTrackParser.SoundtrackMovie();
         }
         static void Main(string[] args)
         {
