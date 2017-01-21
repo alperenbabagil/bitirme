@@ -18,12 +18,12 @@ namespace BitirmeParsing.ActorParser
             if (type == "actor")
             {
                 fileLoc = ConfigurationSettings.AppSettings["actorsListLocation"];
-                tableName = "actor";
+                tableName = "actormovie";
             }
             else
             {
                 fileLoc = ConfigurationSettings.AppSettings["actressListLocation"];
-                tableName = "actress";
+                tableName = "actressmovie";
             }
         }
 
