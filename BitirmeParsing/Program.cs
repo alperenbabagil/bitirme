@@ -41,7 +41,7 @@ namespace BitirmeParsing
 
             //new RatingParser.RatingParser().Parse();
             //new SoundTrackParser.SoundtrackParser().Parse();
-            new SoundTrackParser.SoundtrackMovieParser().Parse();
+            //new SoundTrackParser.SoundtrackMovieParser().Parse();
 
             //new ActorParser.ActorParser().Parse();
             //new ActorParser.ActorMovieParser().Parse();
@@ -52,7 +52,7 @@ namespace BitirmeParsing
             //new GenreParser.GenreParser().Parse();
             //Console.WriteLine("genre counter db " + DBHelper.Instance.addGenreCounter);
 
-            //new MovieParser.MovieParser().Parse();
+            new MovieParser.MovieParser().Parse();
             //Console.WriteLine("movie counter db: " + DBHelper.Instance.addMovieCounter);
 
 

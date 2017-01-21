@@ -87,10 +87,18 @@ namespace BitirmeParsing.DBConnection
                 if (connection != null)
                 {
                     MySqlCommand command = connection.CreateCommand();
+                    var exampleMov = movies[0];
 
 
                     //string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year,directorId,color,country,rating,certificate,runningTime) VALUES ", tableName);
-                    string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year,rating) VALUES ", tableName);
+                    string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year", tableName);
+                    if (exampleMov.color != null) cmd += ",color";
+                    if (exampleMov.certificate != null) cmd += ",certificate";
+                    if (exampleMov.directorId != 0) cmd += ",directorId";
+                    if (exampleMov.country != null) cmd += ",country";
+                    if (exampleMov.rating != 0) cmd += ",rating";
+                    if (exampleMov.runningTime != 0) cmd += ",runningTime";
+                    cmd += ") VALUES ";
 
                     int counter = 0;
 
@@ -106,16 +114,27 @@ namespace BitirmeParsing.DBConnection
                         //sql += "(@name" + counter + ", @year" + counter + ", @directorId" + counter + "),";
 
                         //sql += string.Format("(@name{0},@year{0},@directorId{0},@color{0},@country{0},@rating{0},@certificate{0},@runningTime{0}),", counter);
-                        sql += string.Format("(@name{0},@year{0},@rating{0}),", counter);
+
+
+                        sql += string.Format("(@name{0},@year{0}", counter);
+
+                        if (exampleMov.color != null) cmd += ",@color{0}";
+                        if (exampleMov.certificate != null) cmd += ",@certificate{0}";
+                        if (exampleMov.directorId != 0) cmd += ",@directorId{0}";
+                        if (exampleMov.country != null) cmd += ",@country{0}";
+                        if (exampleMov.rating != 0) cmd += ",@rating{0}";
+                        if (exampleMov.runningTime != 0) cmd += ",@runningTime{0}";
+
+                        sql += "),";
 
                         command.Parameters.Add(new MySqlParameter("name" + counter, movie.Name));
                         command.Parameters.Add(new MySqlParameter("year" + counter, movie.Year.ToString()));
-                        //command.Parameters.Add(new MySqlParameter("directorId" + counter, movie.directorId.ToString()));
-                        //command.Parameters.Add(new MySqlParameter("color" + counter, movie.color));
-                        //command.Parameters.Add(new MySqlParameter("country" + counter, movie.country));
-                        command.Parameters.Add(new MySqlParameter("rating" + counter, movie.rating));
-                        //command.Parameters.Add(new MySqlParameter("certificate" + counter, movie.certificate));
-                        //command.Parameters.Add(new MySqlParameter("runningTime" + counter, movie.runningTime.ToString()));
+                        if (exampleMov.directorId != 0) command.Parameters.Add(new MySqlParameter("directorId" + counter, movie.directorId.ToString()));
+                        if (exampleMov.color != null) command.Parameters.Add(new MySqlParameter("color" + counter, movie.color));
+                        if (exampleMov.country != null) command.Parameters.Add(new MySqlParameter("country" + counter, movie.country));
+                        if (exampleMov.rating != 0) command.Parameters.Add(new MySqlParameter("rating" + counter, movie.rating));
+                        if (exampleMov.certificate != null) command.Parameters.Add(new MySqlParameter("certificate" + counter, movie.certificate));
+                        if (exampleMov.runningTime != 0) command.Parameters.Add(new MySqlParameter("runningTime" + counter, movie.runningTime.ToString()));
                         counter++;
                     }
                     command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
