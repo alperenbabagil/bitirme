@@ -15,10 +15,12 @@ namespace BitirmeParsing.RatingParser
     {
 
         string newTableName;
+        string readFromtableName;
 
-        public RatingParser(string newTableName_)
+        public RatingParser(string readFromtableName, string newTableName_)
         {
             newTableName = newTableName_;
+            this.readFromtableName = readFromtableName;
         }
 
         BlockingCollection<List<Movie>> dataItems;
@@ -83,7 +85,7 @@ namespace BitirmeParsing.RatingParser
 
                             currentMovieName = s;
 
-                            Movie movie = DBHelper.Instance.getMovieByProperty("movie","name", s, true);
+                            Movie movie = DBHelper.Instance.getMovieByProperty(readFromtableName, "name", s, true);
 
                             if (movie.Name == null)
                             {

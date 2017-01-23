@@ -23,10 +23,12 @@ namespace BitirmeParsing.ColorParser
     public class ColorParser : ParserBase<Movie>
     {
         string newTableName;
+        string readFromtableName;
 
-        public ColorParser(string newTableName_)
+        public ColorParser(string readFromtableName, string newTableName_)
         {
             newTableName = newTableName_;
+            this.readFromtableName = readFromtableName;
         }
 
         public override void parseLogic(BlockingCollection<List<Movie>> dataItems)

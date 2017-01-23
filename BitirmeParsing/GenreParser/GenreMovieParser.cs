@@ -46,6 +46,13 @@ namespace BitirmeParsing.GenreParser
         //    genreIDDict["Western"] = 20;
         //}
 
+        string readFromtableName;
+
+        public GenreMovieParser(string readFromtableName)
+        {
+            this.readFromtableName = readFromtableName;
+        }
+
         public override void parseLogic(BlockingCollection<List<GenreMovie>> dataItems)
         {
             using (FileStream fs = File.Open(ConfigurationSettings.AppSettings["genresListLocation"], FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -69,7 +76,7 @@ namespace BitirmeParsing.GenreParser
                     if (tempName != null && currentMovieName != tempName) // movielerin director idlerini güncellerken kullanılan blok
                     {
                         currentMovieName = tempName;
-                        Movie movie = DBHelper.Instance.getMovieByProperty("movie", "name", currentMovieName, true);
+                        Movie movie = DBHelper.Instance.getMovieByProperty(readFromtableName, "name", currentMovieName, true);
                         currentMovieId = movie.id;
                     }
 

@@ -15,10 +15,12 @@ namespace BitirmeParsing.RunningTimesParser
     {
 
         string newTableName;
+        string readFromtableName;
 
-        public RunningTimesParser(string newTableName_)
+        public RunningTimesParser(string readFromtableName, string newTableName_)
         {
             newTableName = newTableName_;
+            this.readFromtableName = readFromtableName;
         }
 
         BlockingCollection<List<Movie>> dataItems;
@@ -81,12 +83,8 @@ namespace BitirmeParsing.RunningTimesParser
 
                             currentMovieName = s;
 
-                            Movie movie = DBHelper.Instance.getMovieByProperty("movie", "name", s, true);
+                            Movie movie = DBHelper.Instance.getMovieByProperty(readFromtableName, "name", s, true);
 
-                            if (movie.Name == null)
-                            {
-
-                            }
                             try
                             {
                                 movie.rating = float.Parse(rating, CultureInfo.InvariantCulture);

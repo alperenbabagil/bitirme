@@ -14,10 +14,12 @@ namespace BitirmeParsing.CountryParser
     {
 
         string newTableName;
+        string readFromtableName;
 
-        public CountryParser(string newTableName_)
+        public CountryParser(string readFromtableName, string newTableName_)
         {
             newTableName = newTableName_;
+            this.readFromtableName = readFromtableName;
         }
 
         public override void parseLogic(BlockingCollection<List<Movie>> dataItems)
@@ -44,7 +46,7 @@ namespace BitirmeParsing.CountryParser
                         int index = fields.Length - 1;      // color field'in en sonunda bulunuyor
                         var countryRawString = fields[index];
 
-                        Movie movie = DBHelper.Instance.getMovieByProperty("movie", "name", movieName, true);
+                        Movie movie = DBHelper.Instance.getMovieByProperty(readFromtableName, "name", movieName, true);
                         movie.country = countryRawString;
 
                         addCounter++;

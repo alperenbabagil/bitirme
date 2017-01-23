@@ -14,10 +14,12 @@ namespace BitirmeParsing.DirectorParser
     {
 
         string newTableName;
+        string readFromtableName;
 
-        public MovieDirectorUpdateParser(string newTableName_)
+        public MovieDirectorUpdateParser(string readFromtableName,string newTableName_)
         {
             newTableName = newTableName_;
+            this.readFromtableName = readFromtableName;
         }
 
         public override void parseLogic(BlockingCollection<List<Movie>> dataItems)
@@ -61,7 +63,7 @@ namespace BitirmeParsing.DirectorParser
                         {
                             currentMovieName = s;
 
-                            Movie movie = DBHelper.Instance.getMovieByProperty("movie", "name", s, true);
+                            Movie movie = DBHelper.Instance.getMovieByProperty(readFromtableName, "name", s, true);
                             movie.directorId = currentDirector.id;
 
                             addCtr++;

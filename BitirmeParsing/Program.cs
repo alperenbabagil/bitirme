@@ -81,21 +81,22 @@ namespace BitirmeParsing
         void programOrdered()
         {
             //new MovieParser.MovieParser().Parse();
-            new ActorParser.ActorMovieParser("actor").Parse();
-            new ActorParser.ActorMovieParser("actress").Parse();
+            //new ActorParser.ActorMovieParser("movie_onlymovie","actor").Parse();
+            //new ActorParser.ActorMovieParser("movie_onlymovie", "actress").Parse();
             //new SoundTrackParser.SoundtrackMovieParser().Parse();
-            new GenreParser.GenreMovieParser().Parse();
+           // new GenreParser.GenreMovieParser("movie_onlymovie").Parse();
 
-            new DirectorParser.MovieDirectorUpdateParser("movie_directorId");
-            new RunningTimesParser.RunningTimesParser("movie_runningTime");
-            new RatingParser.RatingParser("movie_rating");
-            new CountryParser.CountryParser("movie_country");
-            new ColorParser.ColorParser("movie_country");
+            //new DirectorParser.MovieDirectorUpdateParser("movie_onlymovie", "movie_directorId").Parse();
+            //new RunningTimesParser.RunningTimesParser("movie_directorId","movie_runningTime").Parse();
+            //new RatingParser.RatingParser("movie_runningTime","movie_rating").Parse();
+            new CountryParser.CountryParser("movie_rating","movie_country").Parse();
+            new ColorParser.ColorParser("movie_country","movie").Parse();
 
-            new DirectorParser.DirectorParser().Parse();
+
+            //new DirectorParser.DirectorParser().Parse();
             //new SoundTrackParser.SoundtrackParser().Parse();
-            new ActorParser.ActorParser("actor").Parse();
-            new ActorParser.ActorParser("actress").Parse();
+            //new ActorParser.ActorParser("actor").Parse();
+            //new ActorParser.ActorParser("actress").Parse();
 
 
             //new SoundTrackParser.SoundtrackMovie();

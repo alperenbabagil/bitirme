@@ -122,8 +122,8 @@ namespace BitirmeParsing.DBConnection
                     if (exampleMov.certificate != null) cmd += ",certificate";
                     if (exampleMov.directorId != 0) cmd += ",directorId";
                     if (exampleMov.country != null) cmd += ",country";
-                    if (exampleMov.rating != 0) cmd += ",rating";
-                    if (exampleMov.runningTime != 0) cmd += ",runningTime";
+                    if (exampleMov.rating != -1) cmd += ",rating";
+                    if (exampleMov.runningTime != -1) cmd += ",runningTime";
                     cmd += ") VALUES ";
 
                     int counter = 0;
@@ -144,23 +144,23 @@ namespace BitirmeParsing.DBConnection
 
                         sql += string.Format("(@name{0},@year{0}", counter);
 
-                        if (exampleMov.color != null) cmd += ",@color{0}";
-                        if (exampleMov.certificate != null) cmd += ",@certificate{0}";
-                        if (exampleMov.directorId != 0) cmd += ",@directorId{0}";
-                        if (exampleMov.country != null) cmd += ",@country{0}";
-                        if (exampleMov.rating != 0) cmd += ",@rating{0}";
-                        if (exampleMov.runningTime != 0) cmd += ",@runningTime{0}";
+                        if (exampleMov.color != null) sql += ",@color" + counter;
+                        if (exampleMov.certificate != null) sql += ",@certificate+ counter";
+                        if (exampleMov.directorId != -1) sql += ",@directorId" + counter;
+                        if (exampleMov.country != null) sql += ",@country" + counter;
+                        if (exampleMov.rating != -1) sql += ",@rating" + counter;
+                        if (exampleMov.runningTime != -1) sql += ",@runningTime" + counter;
 
                         sql += "),";
 
                         command.Parameters.Add(new MySqlParameter("name" + counter, movie.Name));
                         command.Parameters.Add(new MySqlParameter("year" + counter, movie.Year.ToString()));
-                        if (exampleMov.directorId != 0) command.Parameters.Add(new MySqlParameter("directorId" + counter, movie.directorId.ToString()));
+                        if (exampleMov.directorId != -1) command.Parameters.Add(new MySqlParameter("directorId" + counter, movie.directorId.ToString()));
                         if (exampleMov.color != null) command.Parameters.Add(new MySqlParameter("color" + counter, movie.color));
                         if (exampleMov.country != null) command.Parameters.Add(new MySqlParameter("country" + counter, movie.country));
-                        if (exampleMov.rating != 0) command.Parameters.Add(new MySqlParameter("rating" + counter, movie.rating));
+                        if (exampleMov.rating != -1) command.Parameters.Add(new MySqlParameter("rating" + counter, movie.rating));
                         if (exampleMov.certificate != null) command.Parameters.Add(new MySqlParameter("certificate" + counter, movie.certificate));
-                        if (exampleMov.runningTime != 0) command.Parameters.Add(new MySqlParameter("runningTime" + counter, movie.runningTime.ToString()));
+                        if (exampleMov.runningTime != -1) command.Parameters.Add(new MySqlParameter("runningTime" + counter, movie.runningTime.ToString()));
                         counter++;
                     }
                     command.CommandText = cmd + sql.Substring(0, sql.Length - 1) + "; COMMIT;"; //Remove ',' at the end
@@ -592,8 +592,8 @@ namespace BitirmeParsing.DBConnection
             if (connection == null) openConnection();
             Movie newMovie = new Movie();
             string sqlQuery = null;
-            if (putQuotes) sqlQuery = string.Format("Select * from movie where {0} = '{1}'", propertyName, property);
-            else sqlQuery = string.Format("Select * from movie where {0} = {1}", propertyName, property);
+            if (putQuotes) sqlQuery = string.Format("Select * from {2} where {0} = '{1}' LIMIT 1", propertyName, property, tableName);
+            else sqlQuery = string.Format("Select * from {2} where {0} = {1} LIMIT 1", propertyName, property,tableName);
 
             MySqlCommand cmd = new MySqlCommand(sqlQuery, connection);
             //cmd.Parameters.AddWithValue("@pname", movieName);

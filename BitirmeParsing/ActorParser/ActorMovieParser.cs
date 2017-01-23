@@ -13,8 +13,10 @@ namespace BitirmeParsing.ActorParser
     {
         string fileLoc = "";
         string tableName = "";
-        public ActorMovieParser(string type)
+        string readFromtableName;
+        public ActorMovieParser(string readFromtableName,string type)
         {
+            this.readFromtableName = readFromtableName;
             if (type == "actor")
             {
                 fileLoc = ConfigurationSettings.AppSettings["actorsListLocation"];
@@ -113,7 +115,7 @@ namespace BitirmeParsing.ActorParser
 
 
 
-            Movie movie = DBHelper.Instance.getMovieByProperty("movie", "name", currentMovieName, true);
+            Movie movie = DBHelper.Instance.getMovieByProperty(readFromtableName, "name", currentMovieName, true);
 
             var movAct = new ActorMovie() { actorID = addActorId, movieID = movie.id };
 
