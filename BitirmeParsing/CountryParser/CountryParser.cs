@@ -57,6 +57,7 @@ namespace BitirmeParsing.CountryParser
                             Console.WriteLine("country update: " + addCounter + "    " + movie.id);
                             dataItems.Add(bufferList);
                             bufferList = new List<Movie>();
+                            if (limitWithOneWrite) break;
                         }
                         bufferList.Add(movie);
 

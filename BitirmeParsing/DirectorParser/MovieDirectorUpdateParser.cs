@@ -67,12 +67,13 @@ namespace BitirmeParsing.DirectorParser
                             movie.directorId = currentDirector.id;
 
                             addCtr++;
-                            if (addCtr % 1000 == 0) Console.WriteLine("Movie get: " + addCtr + "    " + movie.id);
+                            if (addCtr % 1000 == 0) Console.WriteLine("Movie director update Movie get: " + addCtr + "    " + movie.id);
 
                             if (addCtr % GlobalVariables.writeToDbBulkSize == 0)
                             {
                                 dataItems.Add(blockMovies);
                                 blockMovies = new List<Movie>();
+                                if (limitWithOneWrite) break;
                             }
                             blockMovies.Add(movie);
                         }

@@ -93,7 +93,8 @@ namespace BitirmeParsing.GenreParser
                             Console.WriteLine("genre get: " + addCounter );
                             dataItems.Add(bufferList);
                             bufferList = new List<GenreMovie>();
-                        }
+                            if (limitWithOneWrite) break;
+                    }
                         bufferList.Add(genMov);
 
                     }

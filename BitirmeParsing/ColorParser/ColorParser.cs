@@ -56,7 +56,7 @@ namespace BitirmeParsing.ColorParser
                         int index = fields.Length - 1;      // color field'in en sonunda bulunuyor
                         var colorRawString = fields[index];
 
-                        Movie movie = DBHelper.Instance.getMovieByProperty("movie", "name", movieName, true);
+                        Movie movie = DBHelper.Instance.getMovieByProperty(readFromtableName, "name", movieName, true);
                         movie.color = colorRawString;
 
                         addCounter++;
@@ -67,6 +67,7 @@ namespace BitirmeParsing.ColorParser
                             Console.WriteLine("Color update get: " + addCounter + "    " + movie.id);
                             dataItems.Add(bufferList);
                             bufferList = new List<Movie>();
+                            if (limitWithOneWrite) break;
                         }
                         bufferList.Add(movie);
 

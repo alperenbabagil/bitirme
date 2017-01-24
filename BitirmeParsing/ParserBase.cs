@@ -16,6 +16,8 @@ namespace BitirmeParsing
 
         public int addCounter = 0;
 
+        public bool limitWithOneWrite = false;
+
         public void Parse()
         {
             dataItems = new BlockingCollection<List<T>>();
@@ -29,6 +31,7 @@ namespace BitirmeParsing
             Task.Run(() =>
             {
                 parseLogic(dataItems);
+                dataItems.CompleteAdding();
             });
 
             
@@ -49,7 +52,7 @@ namespace BitirmeParsing
                 }
             }
             Console.WriteLine("\r\nNo more items to take.");
-            DBHelper.Instance.closeConnection();
+            //DBHelper.Instance.closeConnection();
         }
 
         public abstract void parseLogic(BlockingCollection<List<T>> dataItems);

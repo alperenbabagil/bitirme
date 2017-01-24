@@ -44,26 +44,27 @@ namespace BitirmeParsing.ActorParser
                     if (!line.StartsWith("\t"))
                     {
                         var imdex = line.IndexOf('\t');
-                        
+
 
                         if (parts[0] != null && parts[0].Length > 0)
                         {
                             currentActorName = parts[0];
                         }
-                           
+
                     }
                     addCounter++;
 
-                    if (addCounter % 1000 == 0) Console.WriteLine("Actor: " + addCounter );
-
                     if (addCounter % GlobalVariables.writeToDbBulkSize == 0)
                     {
+
                         dataItems.Add(bufferList);
                         bufferList = new List<Actor>();
+                        Console.WriteLine("Actor: " + addCounter);
+                        if (limitWithOneWrite) break;
                     }
 
                     bufferList.Add(new Actor() { id = addCounter, Name = currentActorName });
-                    
+
                 }
                 Console.WriteLine("end");
             }
@@ -71,7 +72,7 @@ namespace BitirmeParsing.ActorParser
 
         public override void writeLogic(List<Actor> writeList)
         {
-            DBHelper.Instance.addActors(writeList,tableName);
+            DBHelper.Instance.addActors(writeList, tableName);
         }
     }
 }

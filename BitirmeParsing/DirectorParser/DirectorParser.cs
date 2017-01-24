@@ -166,6 +166,7 @@ namespace BitirmeParsing.DirectorParser
                             Console.WriteLine("Director add: " + addCounter);
                             dataItems.Add(bufferList);
                             bufferList = new List<Director>();
+                            if (limitWithOneWrite) break;
                         }
                         bufferList.Add(currentDirector);
                     }

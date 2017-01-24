@@ -14,7 +14,12 @@ namespace BitirmeParsing.ActorParser
         string fileLoc = "";
         string tableName = "";
         string readFromtableName;
-        public ActorMovieParser(string readFromtableName,string type)
+
+
+
+        bool limitWithOneWriteMovie = false;
+
+        public ActorMovieParser(string readFromtableName, string type)
         {
             this.readFromtableName = readFromtableName;
             if (type == "actor")
@@ -45,6 +50,9 @@ namespace BitirmeParsing.ActorParser
                 while ((line = sr.ReadLine()) != null)
                 {
                     if (line == null || line.Length == 0) continue;
+
+                    if (limitWithOneWriteMovie)  break;
+
                     var parts = line.Split('\t');
                     if (!line.StartsWith("\t"))
                     {
@@ -95,10 +103,6 @@ namespace BitirmeParsing.ActorParser
                             }
                         }
                     }
-
-                    
-
-
                 }
                 Console.WriteLine("end");
             }
@@ -106,10 +110,10 @@ namespace BitirmeParsing.ActorParser
 
         public override void writeLogic(List<ActorMovie> writeList)
         {
-            DBHelper.Instance.addActorMovie(writeList,tableName);
+            DBHelper.Instance.addActorMovie(writeList, tableName);
         }
 
-        void addToList(int addActorId,string currentMovieName)
+        void addToList(int addActorId, string currentMovieName)
         {
             addCounter++;
 
@@ -126,6 +130,7 @@ namespace BitirmeParsing.ActorParser
             {
                 dataItems.Add(bufferList);
                 bufferList = new List<ActorMovie>();
+                if (limitWithOneWrite) limitWithOneWriteMovie=true;
             }
 
             bufferList.Add(movAct);
