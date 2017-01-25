@@ -11,13 +11,13 @@ namespace BitirmeParsing
     {
         public string Name { get; set; }
         public int Year { get; set; }
-        public int directorId { get; set; }
+        public int directorId { get; set; } = -1;
         public int id { get; set; }
         public string color { get; set; }
         public string country { get; set; }
         public string certificate { get; set; }
-        public float rating { get; set; }
-        public int runningTime { get; set; }
+        public float rating { get; set; } = -1;
+        public int runningTime { get; set; } = -1;
         public List<Soundtrack> soundtracks { get; set; }
 
     }

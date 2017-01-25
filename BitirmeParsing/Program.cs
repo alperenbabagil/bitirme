@@ -86,7 +86,7 @@ namespace BitirmeParsing
             //new SoundTrackParser.SoundtrackMovieParser().Parse();
             //new GenreParser.GenreMovieParser("movie_onlymovie").Parse();
 
-            //new DirectorParser.MovieDirectorUpdateParser("movie_onlymovie", "movie_directorId").Parse();
+            new DirectorParser.MovieDirectorUpdateParser("movie_onlymovie", "movie_directorId").Parse();
             //new RunningTimesParser.RunningTimesParser("movie_onlymovie", "movie_runningTime").Parse();
             //new RatingParser.RatingParser("movie_onlymovie", "movie_rating").Parse();
             //new CountryParser.CountryParser("movie_onlymovie", "movie_country").Parse();

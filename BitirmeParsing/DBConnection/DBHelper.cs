@@ -120,7 +120,7 @@ namespace BitirmeParsing.DBConnection
                     string cmd = string.Format("SET autocommit = 0; INSERT INTO {0} (name,year", tableName);
                     if (exampleMov.color != null) cmd += ",color";
                     if (exampleMov.certificate != null) cmd += ",certificate";
-                    if (exampleMov.directorId != 0) cmd += ",directorId";
+                    if (exampleMov.directorId != -1) cmd += ",directorId";
                     if (exampleMov.country != null) cmd += ",country";
                     if (exampleMov.rating != -1) cmd += ",rating";
                     if (exampleMov.runningTime != -1) cmd += ",runningTime";
@@ -145,7 +145,7 @@ namespace BitirmeParsing.DBConnection
                         sql += string.Format("(@name{0},@year{0}", counter);
 
                         if (exampleMov.color != null) sql += ",@color" + counter;
-                        if (exampleMov.certificate != null) sql += ",@certificate+ counter";
+                        if (exampleMov.certificate != null) sql += ",@certificate" + counter;
                         if (exampleMov.directorId != -1) sql += ",@directorId" + counter;
                         if (exampleMov.country != null) sql += ",@country" + counter;
                         if (exampleMov.rating != -1) sql += ",@rating" + counter;

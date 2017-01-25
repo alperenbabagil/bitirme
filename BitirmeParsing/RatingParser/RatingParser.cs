@@ -139,7 +139,6 @@ namespace BitirmeParsing.RatingParser
         //            data = dataItems.Take();
         //        }
         //        catch (InvalidOperationException) { }
-
         //        if (data != null)
         //        {
         //            DBHelper.Instance.addMovie(data, newTableName);
@@ -183,7 +182,7 @@ namespace BitirmeParsing.RatingParser
                     }
 
                     var s = MovieParser.MovieParser.extractDbText(movieName); // her movie name extract işleminde bu kullanılacak
-                    if (currentMovieName == null) currentMovieName = s;
+                    //if (currentMovieName == null) currentMovieName = s;
                     if (currentMovieName != s)
                     {
                         //DBHelper.Instance.updateMovieDirectorColumn(s,currentDirector.id);

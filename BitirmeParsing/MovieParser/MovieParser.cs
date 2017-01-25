@@ -197,10 +197,13 @@ namespace BitirmeParsing.MovieParser
                         }
 
                         addCounter++;
-
+                        if (addCounter % 10000 == 0 ){
+                            Console.WriteLine("Movie add" + " " + line + " ctr " + addCounter);
+                        }
+                       
                         if (addCounter % GlobalVariables.writeToDbBulkSize == 0)
                         {
-                            Console.WriteLine("Movie add" + " " + line + " ctr " + addCounter);
+                            
                             dataItems.Add(blockMovies);
                             blockMovies = new List<Movie>();
                             if (limitWithOneWrite) break;
